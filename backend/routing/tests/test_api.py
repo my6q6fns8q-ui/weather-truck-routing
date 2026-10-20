@@ -6,6 +6,7 @@ from rest_framework.test import APIClient
 
 from routing import planner
 from routing.errors import RouteNotFound
+from routing.providers import geocode
 
 
 def payload(**over):
@@ -39,3 +40,13 @@ class PlanApiTests(SimpleTestCase):
 
     def test_geocode_short_query_is_empty(self):
         self.assertEqual(self.client.get("/api/geocode/?q=ab").json(), [])
+
+    def test_reverse_geocode_rejects_bad_coordinates(self):
+        self.assertEqual(self.client.get("/api/geocode/reverse/?lat=99&lon=0").status_code, 400)
+        self.assertEqual(self.client.get("/api/geocode/reverse/?lat=40").status_code, 400)
+
+    def test_reverse_geocode_names_the_clicked_point(self):
+        feature = {"properties": {"city": "Joliet", "state": "Illinois"}, "geometry": {"coordinates": [-88.1, 41.5]}}
+        with mock.patch.object(geocode, "get_json", return_value={"features": [feature]}):
+            resp = self.client.get("/api/geocode/reverse/?lat=41.52&lon=-88.08")
+        self.assertEqual(resp.json(), {"label": "Joliet, Illinois", "lat": 41.52, "lon": -88.08})

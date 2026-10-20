@@ -15,6 +15,17 @@ class PlaceSerializer(serializers.Serializer):
     lon = serializers.FloatField(min_value=-180, max_value=180)
 
 
+class GeocodeQuerySerializer(serializers.Serializer):
+    q = serializers.CharField(required=False, allow_blank=True, default="", max_length=200)
+    lang = serializers.CharField(required=False, default="en", max_length=8)
+
+
+class ReverseGeocodeQuerySerializer(serializers.Serializer):
+    lat = serializers.FloatField(min_value=-90, max_value=90)
+    lon = serializers.FloatField(min_value=-180, max_value=180)
+    lang = serializers.CharField(required=False, default="en", max_length=8)
+
+
 class PlanRequestSerializer(serializers.Serializer):
     origin = PlaceSerializer()
     destination = PlaceSerializer()

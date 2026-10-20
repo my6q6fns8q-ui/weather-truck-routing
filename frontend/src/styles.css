@@ -6,7 +6,9 @@
   --accent: #007aff;
   --glass: rgb(255 255 255 / 74%);
   --shadow: 0 0 0 0.5px rgb(0 0 0 / 8%), 0 10px 36px rgb(0 0 0 / 14%);
-  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, "Segoe UI", sans-serif;
+  --font:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui,
+    "Segoe UI", sans-serif;
   font-family: var(--font);
   color: var(--ink);
 }
@@ -94,11 +96,37 @@ button {
   gap: 14px;
   scrollbar-width: thin;
 }
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
 .brand {
   font-size: 17px;
   font-weight: 700;
   letter-spacing: -0.02em;
   padding: 0 4px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.locale select {
+  font: inherit;
+  color: var(--muted);
+  border: 0;
+  border-radius: 8px;
+  background: var(--fill);
+  padding: 4px 6px;
+  font-size: 12px;
+  cursor: pointer;
 }
 .error {
   color: #ff3b30;
@@ -210,6 +238,53 @@ input[type="datetime-local"]:focus {
 }
 input[aria-invalid="true"] {
   box-shadow: 0 0 0 2px #ff3b30;
+}
+.place-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pick {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--fill);
+  color: var(--muted);
+  display: grid;
+  place-items: center;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+.pick:hover {
+  color: var(--ink);
+}
+.pick.on {
+  background: var(--accent);
+  color: #fff;
+}
+.swap {
+  all: unset;
+  align-self: flex-end;
+  margin: -16px 2px -14px 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--fill);
+  color: var(--muted);
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  cursor: pointer;
+  z-index: 1;
+}
+.swap:hover {
+  color: var(--ink);
+}
+.swap:focus-visible {
+  outline: 2px solid var(--accent);
 }
 .suggestions {
   position: absolute;
@@ -530,6 +605,60 @@ input[aria-invalid="true"] {
   background: rgb(0 0 0 / 5%);
 }
 
+.leaflet-container.picking,
+.leaflet-container.picking .leaflet-grab,
+.leaflet-container.picking .leaflet-interactive {
+  cursor: crosshair;
+}
+
+.pick-banner {
+  position: absolute;
+  z-index: 1000;
+  top: 16px;
+  left: 392px;
+  right: 70px;
+  max-width: 420px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 10px 10px 14px;
+  border-radius: 14px;
+}
+.pick-banner span {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+.pick-banner strong {
+  font-weight: 600;
+}
+.pick-banner small {
+  color: var(--muted);
+  font-size: 12px;
+}
+.ghost {
+  flex: none;
+  border: 0;
+  border-radius: 9px;
+  padding: 7px 12px;
+  background: var(--fill);
+  color: var(--ink);
+  font-size: 13px;
+}
+.ghost:hover {
+  background: rgb(118 118 128 / 20%);
+}
+.ghost.strong {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+.ghost.strong:hover {
+  filter: brightness(1.06);
+}
+
 .pt-wrap {
   background: none;
   border: 0;
@@ -772,6 +901,12 @@ input[aria-invalid="true"] {
   }
   .legend {
     grid-column: 1 / -1;
+    max-width: none;
+  }
+  .pick-banner {
+    left: 8px;
+    right: 8px;
+    top: 8px;
     max-width: none;
   }
   .map-tools {
